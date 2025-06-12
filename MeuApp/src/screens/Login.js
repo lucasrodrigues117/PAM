@@ -1,100 +1,110 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import programmingGif from '../../assets/programming.gif';
 
-export default function Login({ navigation }) {
-  const [usuario, setUsuario] = useState('');
-  const [senha, setSenha] = useState('');
+export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigation = useNavigation();
 
   function handleLogin() {
-    // Aqui você pode adicionar validação se quiser
-    navigation.replace('Home'); // navega para Home e remove a Login da pilha
+    if (!email || !password) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos');
+      return;
+    }
+
+    navigation.navigate('HomeScreen');
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.leftLogin}>
-        <Text style={styles.leftTitle}>
-          Faça login {'\n'}
-          <Text style={styles.leftSubtitle}>E entre para conhecer mais.</Text>
-        </Text>
-        <Image
-          source={require('../../assets/programming.svg')}
-          style={styles.leftImage}
-          resizeMode="contain"
-        />
+    <KeyboardAvoidingView 
+      style={styles.container} 
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <View style={styles.logoContainer}>
+        <Image source={programmingGif} style={styles.gif} />
+        <Text style={styles.title}>Bem-vindo(a)!</Text>
       </View>
 
-      <View style={styles.rightLogin}>
-        <Text style={styles.loginTitle}>LOGIN</Text>
-        <Text style={styles.label}>Usuário</Text>
+      <View style={styles.form}>
         <TextInput
           style={styles.input}
-          placeholder="Usuário"
-          value={usuario}
-          onChangeText={setUsuario}
+          placeholder="Email"
+          placeholderTextColor="#aaa"
+          keyboardType="email-address"
           autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
         />
-        <Text style={styles.label}>Senha</Text>
+
         <TextInput
           style={styles.input}
           placeholder="Senha"
-          secureTextEntry={true}
-          value={senha}
-          onChangeText={setSenha}
+          placeholderTextColor="#aaa"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
         />
-        <Button title="LOGIN" onPress={handleLogin} />
+
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>Entrar</Text>
+        </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
     backgroundColor: '#1b1a1a',
-    padding: 20,
-  },
-  leftLogin: {
-    flex: 1,
     justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  logoContainer: {
     alignItems: 'center',
-    paddingRight: 10,
+    marginBottom: 40,
   },
-  leftTitle: {
-    color: '#fff',
-    fontSize: 24,
+  gif: {
+    width: 150,
+    height: 150,
+    resizeMode: 'contain',
+  },
+  title: {
+    color: '#5d46e2',
+    fontSize: 28,
     fontWeight: 'bold',
-  },
-  leftSubtitle: {
-    fontWeight: 'normal',
-    fontSize: 16,
-  },
-  leftImage: {
-    width: '100%',
-    height: 200,
     marginTop: 20,
   },
-  rightLogin: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingLeft: 10,
-  },
-  loginTitle: {
-    color: '#fff',
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  label: {
-    color: '#fff',
-    marginTop: 10,
-    marginBottom: 5,
+  form: {
+    width: '100%',
   },
   input: {
-    backgroundColor: '#fff',
-    height: 40,
-    paddingHorizontal: 10,
-    borderRadius: 5,
+    backgroundColor: '#514869',
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    color: '#f0ffffde',
+    fontSize: 16,
+    marginBottom: 15,
+  },
+  button: {
+    backgroundColor: '#5d46e2',
+    borderRadius: 30,
+    paddingVertical: 15,
+    alignItems: 'center',
+    marginTop: 10,
+    shadowColor: '#6d57eb',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+  },
+  buttonText: {
+    color: '#2b134b',
+    fontWeight: '800',
+    fontSize: 18,
+    letterSpacing: 3,
+    textTransform: 'uppercase',
   },
 });
